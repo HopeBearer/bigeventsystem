@@ -10,14 +10,14 @@ const isRegister = ref(false)
 const formModel = ref({
   username: '',
   password: '',
-  repassword: '',
+  repassword: ''
 })
 // 切换时，重置表单
 watch(isRegister, () => {
   formModel.value = {
     username: '',
     password: '',
-    repassword: '',
+    repassword: ''
   }
 })
 const form = ref()
@@ -26,16 +26,24 @@ const form = ref()
 const rules = {
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 5, max: 10, message: '用户名必须是5~10位的字符', trigger: 'blur' },
+    { min: 5, max: 10, message: '用户名必须是5~10位的字符', trigger: 'blur' }
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
-    { pattern: /^\S{6,15}$/, message: '密码必须是6~15位的字符', trigger: 'blur' },
+    {
+      pattern: /^\S{6,15}$/,
+      message: '密码必须是6~15位的字符',
+      trigger: 'blur'
+    }
   ],
   // 自定义校验
   repassword: [
     { required: true, message: '请输入密码', trigger: 'blur' },
-    { pattern: /^\S{6,15}$/, message: '密码必须是6~15位的字符', trigger: 'blur' },
+    {
+      pattern: /^\S{6,15}$/,
+      message: '密码必须是6~15位的字符',
+      trigger: 'blur'
+    },
     // rule 当前校验规则的相应信息
     // value 所校验的表单元素目前的表单值
     // callback
@@ -50,9 +58,9 @@ const rules = {
           callback()
         }
       },
-      trigger: 'blur',
-    },
-  ],
+      trigger: 'blur'
+    }
+  ]
 }
 
 const register = async () => {
@@ -126,15 +134,29 @@ const login = async () => {
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button @click="register" class="button" type="primary" auto-insert-space>
+          <el-button
+            @click="register"
+            class="button"
+            type="primary"
+            auto-insert-space
+          >
             注册
           </el-button>
         </el-form-item>
         <el-form-item class="flex">
-          <el-link type="info" :underline="false" @click="isRegister = false"> ← 返回 </el-link>
+          <el-link type="info" :underline="false" @click="isRegister = false">
+            ← 返回
+          </el-link>
         </el-form-item>
       </el-form>
-      <el-form ref="form" :model="formModel" :rules="rules" size="large" autocomplete="off" v-else>
+      <el-form
+        ref="form"
+        :model="formModel"
+        :rules="rules"
+        size="large"
+        autocomplete="off"
+        v-else
+      >
         <el-form-item>
           <h1>登录</h1>
         </el-form-item>
@@ -161,10 +183,18 @@ const login = async () => {
           </div>
         </el-form-item>
         <el-form-item>
-          <el-button @click="login" class="button" type="primary" auto-insert-space>登录</el-button>
+          <el-button
+            @click="login"
+            class="button"
+            type="primary"
+            auto-insert-space
+            >登录</el-button
+          >
         </el-form-item>
         <el-form-item class="flex">
-          <el-link type="info" :underline="false" @click="isRegister = true"> 注册 → </el-link>
+          <el-link type="info" :underline="false" @click="isRegister = true">
+            注册 →
+          </el-link>
         </el-form-item>
       </el-form>
     </el-col>
