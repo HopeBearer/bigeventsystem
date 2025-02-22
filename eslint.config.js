@@ -1,7 +1,6 @@
 import js from '@eslint/js'
 import pluginVue from 'eslint-plugin-vue'
 import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
-
 export default [
   {
     name: 'app/files-to-lint',
@@ -13,6 +12,14 @@ export default [
     ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
   },
   {
+    languageOptions: {
+      globals: {
+        ElMessage: 'readonly',
+        ElMessageBox: 'readonly',
+        ElLoading: 'readonly',
+        myGlobalVar: 'readonly',
+      },
+    },
     rules: {
       'prettier/prettier': [
         'warn',
