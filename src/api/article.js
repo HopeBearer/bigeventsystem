@@ -17,3 +17,14 @@ export const artDelChannelService = (id) =>
       id
     }
   })
+
+// 获取文章列表接口
+export const artGetListService = ({ pagenum, pagesize, cate_id, state }) =>
+  request.get('/my/article/list', {
+    params: {
+      pagenum: pagenum,
+      pagesize: pagesize,
+      cate_id,
+      state
+    }
+  })
