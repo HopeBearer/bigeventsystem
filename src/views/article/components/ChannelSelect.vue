@@ -5,6 +5,9 @@ import { ref } from 'vue'
 defineProps({
   modelValue: {
     type: [Number, String]
+  },
+  width: {
+    type: String
   }
 })
 
@@ -21,7 +24,7 @@ getChannelList()
   <el-select
     :modelValue="modelValue"
     @update:modelValue="emit('update:modelValue', $event)"
-    style="width: 150px"
+    :style="{ width }"
   >
     <!-- label展示给用户看的，value提交给后台的 -->
     <el-option

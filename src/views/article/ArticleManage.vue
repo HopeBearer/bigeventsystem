@@ -4,7 +4,7 @@ import ChannelSelect from './components/ChannelSelect.vue'
 import { ref } from 'vue'
 import { artGetListService } from '@/api/article.js'
 import { formatTime } from '@/utils/format'
-
+import ArticleEdit from './components/ArticleEdit.vue'
 // 定义请求参数对象
 const params = ref({
   pagenum: 1,
@@ -51,16 +51,34 @@ const onReset = () => {
   params.value.state = ''
   getArticleList()
 }
-const visibileDrawer = ref(false)
+
+const articleEditRef = ref()
+
+// 编辑文章
 const onEditArticle = (row) => {
-  console.log(row)
+  articleEditRef.value.open(row)
 }
 
+// 添加文章
+const onAddArticle = () => {
+  // visibileDrawer.value = true
+  articleEditRef.value.open({})
+}
+
+// 删除文章
 const onDelArticle = (row) => {
   console.log(row)
 }
-const onAddArticle = () => {
-  visibileDrawer.value = true
+
+// 添加或者编辑 成功的回调
+const onSuccess = (type) => {
+  if (type === 'add') {
+    // 如果是添加，最好渲染最后一页
+    const lastPage = Math.ceil((articleTotal.value + 1) / params.value.pagesize)
+    // 更新为最大页码数
+    params.value.pagenum = lastPage
+  }
+  getArticleList()
 }
 </script>
 <template>
@@ -129,7 +147,7 @@ const onAddArticle = () => {
     <el-pagination
       v-model:current-page="params.pagenum"
       v-model:page-size="params.pagesize"
-      :page-sizes="[2, 3, 5, 10, 15]"
+      :page-sizes="[2, 3, 5, 10]"
       :size="size"
       :disabled="disabled"
       :background="true"
@@ -140,9 +158,7 @@ const onAddArticle = () => {
       style="margin-top: 20px; justify-content: flex-end"
     />
     <!-- 抽屉 -->
-    <el-drawer v-model="visibileDrawer" title="大标题">
-      <span>Hi, there!</span>
-    </el-drawer>
+    <ArticleEdit ref="articleEditRef" @publishSuccess="onSuccess"></ArticleEdit>
   </pageContainer>
 </template>
 <style scoped></style>
