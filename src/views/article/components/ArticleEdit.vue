@@ -1,12 +1,19 @@
 <script setup>
-import { artPublishService } from '@/api/article.js'
+import {
+  artEditService,
+  artGetDetailService,
+  artPublishService
+} from '@/api/article.js'
 import { ref } from 'vue'
 import ChannelSelect from './ChannelSelect.vue'
 import { Plus } from '@element-plus/icons-vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
-const visibileDrawer = ref(false)
+import { baseURL } from '@/utils/request'
+import axios from 'axios'
+import { ElMessage } from 'element-plus'
 
+const visibileDrawer = ref(false)
 const defaultForm = {
   title: '',
   cate_id: '',
@@ -25,6 +32,28 @@ const onSelectFile = (uploadFile) => {
   formModel.value.cover_img = uploadFile.raw
 }
 
+// 将网络图片地址转换为File对象
+async function imageUrlToFile(url, fileName) {
+  try {
+    // 第一步：使用axios获取网络图片数据
+    const response = await axios.get(url, { responseType: 'arraybuffer' })
+    const imageData = response.data
+
+    // 第二步：将图片数据转换为Blob对象
+    const blob = new Blob([imageData], {
+      type: response.headers['content-type']
+    })
+
+    // 第三步：创建一个新的File对象
+    const file = new File([blob], fileName, { type: blob.type })
+
+    return file
+  } catch (error) {
+    console.error('将图片转换为File对象时发生错误:', error)
+    throw error
+  }
+}
+
 // 要暴露出去的方法
 const editorRef = ref()
 const open = async (row) => {
@@ -32,6 +61,16 @@ const open = async (row) => {
   console.log(editorRef.value)
   if (row.id) {
     // 需要基于 row.id 发送请求，获得数据回显
+    const {
+      data: { data }
+    } = await artGetDetailService(row.id)
+    formModel.value = data
+    // 图片需要单独处理
+    imgUrl.value = baseURL + formModel.value.cover_img
+    // 提交给后台的图片数据格式是file对象格式
+    // 需要将网络图片地址 => 转换成file对象存储
+    const file = await imageUrlToFile(imgUrl.value, formModel.value.cover_img)
+    formModel.value.cover_img = file
   } else {
     formModel.value = { ...defaultForm }
     imgUrl.value = ''
@@ -52,9 +91,10 @@ const onPublish = async (state) => {
   }
   // 发送请求
   if (formModel.value.id) {
-    console.log('编辑操作')
+    await artEditService(fd)
+    ElMessage.success('修改成功！')
+    emit('publishSuccess', 'edit')
   } else {
-    console.log('添加操作')
     await artPublishService(fd)
     ElMessage.success('添加成功！')
     // 通知父组件，添加成功了

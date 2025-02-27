@@ -30,7 +30,7 @@ export const artGetListService = ({ pagenum, pagesize, cate_id, state }) =>
   })
 
 // 获取文章详情接口
-export const artGetInfoService = (id) =>
+export const artGetDetailService = (id) =>
   request.get('/my/article/info', { params: { id } })
 
 // 添加文章接口
@@ -39,3 +39,11 @@ export const artPublishService = (data) => request.post('/my/article/add', data)
 
 // 编辑文章接口
 export const artEditService = (data) => request.put('/my/article/info', data)
+
+// 删除文章接口
+export const artDelService = (id) =>
+  request.delete('/my/article/info', {
+    params: {
+      id
+    }
+  })

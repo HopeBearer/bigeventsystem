@@ -2,7 +2,7 @@
 import { Edit, Delete } from '@element-plus/icons-vue'
 import ChannelSelect from './components/ChannelSelect.vue'
 import { ref } from 'vue'
-import { artGetListService } from '@/api/article.js'
+import { artDelService, artGetListService } from '@/api/article.js'
 import { formatTime } from '@/utils/format'
 import ArticleEdit from './components/ArticleEdit.vue'
 // 定义请求参数对象
@@ -66,8 +66,21 @@ const onAddArticle = () => {
 }
 
 // 删除文章
-const onDelArticle = (row) => {
-  console.log(row)
+const onDelArticle = async (row) => {
+  // 弹出确认框
+  await ElMessageBox.confirm(
+    `确认要删除 <b>${row.title}</b> 吗？`,
+    '温馨提示',
+    {
+      dangerouslyUseHTMLString: true,
+      type: 'warning',
+      confirmButtonText: '确认',
+      cancelButtonText: '取消'
+    }
+  )
+  await artDelService(row.id)
+  ElMessage.success('删除成功')
+  getArticleList()
 }
 
 // 添加或者编辑 成功的回调
@@ -78,6 +91,7 @@ const onSuccess = (type) => {
     // 更新为最大页码数
     params.value.pagenum = lastPage
   }
+  // 刷新列表
   getArticleList()
 }
 </script>
